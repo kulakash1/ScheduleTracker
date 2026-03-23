@@ -1,0 +1,13 @@
+{
+  "name": "daily-status-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily status tracker with per-user file storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
