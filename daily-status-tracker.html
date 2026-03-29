@@ -553,55 +553,70 @@
 
   <script>
     const defaultWeekdayItems = [
-      "5:45 AM - Wake up",
-      "6:00 - 7:20 AM - DSA practice",
-      "7:20 - 7:40 AM - Breakfast",
-      "7:50 - 9:00 AM - Commute",
-      "9:00 AM - 5:10 PM - Office",
-      "5:10 - 6:20 PM - Commute back",
-      "6:20 - 6:40 PM - Relax",
-      "6:40 - 7:00 PM - Snack",
-      "7:00 - 8:00 PM - System Design study",
-      "8:00 - 8:30 PM - Dinner",
-      "8:30 - 9:30 PM - English/Aptitude/Reasoning",
-      "9:30 - 10:00 PM - Spring Boot learning",
-      "10:00 - 10:40 PM - DSA revision",
-      "10:45 PM - Sleep"
-    ];
+  "5:45 - 6:00 AM - Wake up & Fresh",
+  "6:00 - 7:00 AM - Aptitude",
+  "7:20 - 8:20 AM - GYM",
+  "8:40 - 9:00 AM - Breakfast",
+  "9:10 - 10:30 AM - Current Affairs + CA Revision",
+  "11:00 - 12:40 PM - Reasoning",
+  "1:00 - 1:40 PM - Lunch",
+  "1:40 - 1:50 PM - 1 Comedy Video",
+  "1:50 - 2:30 PM - Relax",
+  "2:30 - 3:40 PM - English",
+  "4:00 - 5:20 PM - Communication and Content Creation",
+  "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+  "6:40 - 7:00 PM - Snack",
+  "7:00 - 8:00 PM - System Design study",
+  "8:00 - 8:30 PM - Dinner",
+  "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+  "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+  "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+  "10:45 PM - Sleep"
+];
 
-    const defaultSaturdayItems = [
-      "7:00 AM - Wake up",
-      "7:20 - 7:40 AM - Breakfast (milk 500 ml, 5 almonds, fruit)",
-      "7:45 - 9:45 AM - DSA deep practice (3-4 problems)",
-      "9:45 - 10:15 AM - Break",
-      "10:15 - 11:30 AM - System Design study",
-      "12:30 PM - Lunch (roti, rice, dal, sabji)",
-      "1:00 - 2:00 PM - Rest / short nap",
-      "2:00 - 3:00 PM - Spring Boot project work",
-      "3:30 - 4:30 PM - DSA advanced problems",
-      "6:00 PM - Snack (coconut water + fruit)",
-      "6:30 - 7:30 PM - English / Aptitude / Reasoning",
-      "8:00 PM - Dinner (paneer, salad, peanuts, dahi)",
-      "9:00 - 9:30 PM - Light tech learning / system design videos",
-      "11:00 PM - Sleep"
-    ];
+const defaultSaturdayItems = [
+  "5:45 - 6:00 AM - Wake up & Fresh",
+  "6:00 - 7:00 AM - Aptitude",
+  "7:20 - 8:20 AM - GYM",
+  "8:40 - 9:00 AM - Breakfast",
+  "9:10 - 10:30 AM - Current Affairs + CA Revision",
+  "11:00 - 12:40 PM - Reasoning",
+  "1:00 - 1:40 PM - Lunch",
+  "1:40 - 1:50 PM - 1 Comedy Video",
+  "1:50 - 2:30 PM - Relax",
+  "2:30 - 3:40 PM - English",
+  "4:00 - 5:20 PM - Communication and Content Creation",
+  "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+  "6:40 - 7:00 PM - Snack",
+  "7:00 - 8:00 PM - System Design study",
+  "8:00 - 8:30 PM - Dinner",
+  "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+  "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+  "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+  "10:45 PM - Sleep"
+];
 
-    const defaultSundayItems = [
-      "7:30 AM - Wake up",
-      "7:30 - 8:00 AM - Breakfast",
-      "8:00 - 10:30 AM - DSA marathon (5-6 problems)",
-      "10:30 - 11:00 AM - Break",
-      "11:00 - 12:30 PM - System Design case study",
-      "1:00 PM - Lunch",
-      "1:30 - 2:30 PM - Rest",
-      "2:30 - 5:00 PM - Spring Boot deep project work",
-      "6:00 PM - Snack (fruit + coconut water)",
-      "6:30 - 7:30 PM - Weekly review of DSA and concepts",
-      "8:00 PM - Dinner",
-      "9:00 - 9:45 PM - English practice / tech reading",
-      "10:30 PM - Sleep"
-    ];
-
+const defaultSundayItems = [
+  "5:45 - 6:00 AM - Wake up & Fresh",
+  "6:00 - 7:00 AM - Aptitude",
+  "7:20 - 8:20 AM - GYM",
+  "8:40 - 9:00 AM - Breakfast",
+  "9:10 - 10:30 AM - Current Affairs + CA Revision",
+  "11:00 - 12:40 PM - Reasoning",
+  "1:00 - 1:40 PM - Lunch",
+  "1:40 - 1:50 PM - 1 Comedy Video",
+  "1:50 - 2:30 PM - Relax",
+  "2:30 - 3:40 PM - English",
+  "4:00 - 5:20 PM - Communication and Content Creation",
+  "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+  "6:40 - 7:00 PM - Snack",
+  "7:00 - 8:00 PM - System Design study",
+  "8:00 - 8:30 PM - Dinner",
+  "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+  "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+  "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+  "10:45 PM - Sleep"
+];
     const dietItems = [
       "Breakfast: 500 ml milk + 5 almonds + 1 fruit",
       "Lunch: 4 roti + 80 g rice + 50 g dal + 100 g sabji",

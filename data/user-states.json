@@ -1,10 +1,10 @@
 {
   "default": {
     "meta": {
-      "firstDate": "2026-03-16",
-      "rangeValue": 5,
+      "firstDate": "2026-04-01",
+      "rangeValue": 3,
       "rangeUnit": "months",
-      "openMonthKey": "2026-03",
+      "openMonthKey": "2026-04",
       "openDayKey": ""
     },
     "2026-03-15": {
@@ -114,6 +114,80 @@
         "5": true
       },
       "notes": ""
+    }
+  },
+  "Akash K": {
+    "meta": {
+      "firstDate": "2026-03-29",
+      "rangeValue": 4,
+      "rangeUnit": "months",
+      "openMonthKey": "2026-03",
+      "openDayKey": "2026-03-30",
+      "templates": {
+        "weekday": [
+          "5:45 - 6:00 AM - Wake up & Fresh",
+          "6:00 - 7:00 AM - Aptitude",
+          "7:20 - 8:20 AM - GYM",
+          "8:40 - 9:00 AM - Breakfast",
+          "9:10 - 10:30 AM - Current Affairs + CA Revision",
+          "11:00 - 12:40 PM - Reasoning",
+          "1:00 - 1:40 PM - Lunch",
+          "1:40 - 1:50 PM - 1 Comedy Video",
+          "1:50 - 2:30 PM - Relax",
+          "2:30 - 3:40 PM - English",
+          "4:00 - 5:20 PM - Communication and Content Creation",
+          "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+          "6:40 - 7:00 PM - Snack",
+          "7:00 - 8:00 PM - System Design study",
+          "8:00 - 8:30 PM - Dinner",
+          "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+          "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+          "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+          "10:45 PM - Sleep"
+        ],
+        "saturday": [
+          "5:45 - 6:00 AM - Wake up & Fresh",
+          "6:00 - 7:00 AM - Aptitude",
+          "7:20 - 8:20 AM - GYM",
+          "8:40 - 9:00 AM - Breakfast",
+          "9:10 - 10:30 AM - Current Affairs + CA Revision",
+          "11:00 - 12:40 PM - Reasoning",
+          "1:00 - 1:40 PM - Lunch",
+          "1:40 - 1:50 PM - 1 Comedy Video",
+          "1:50 - 2:30 PM - Relax",
+          "2:30 - 3:40 PM - English",
+          "4:00 - 5:20 PM - Communication and Content Creation",
+          "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+          "6:40 - 7:00 PM - Snack",
+          "7:00 - 8:00 PM - System Design study",
+          "8:00 - 8:30 PM - Dinner",
+          "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+          "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+          "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+          "10:45 PM - Sleep"
+        ],
+        "sunday": [
+          "5:45 - 6:00 AM - Wake up & Fresh",
+          "6:00 - 7:00 AM - Aptitude",
+          "7:20 - 8:20 AM - GYM",
+          "8:40 - 9:00 AM - Breakfast",
+          "9:10 - 10:30 AM - Current Affairs + CA Revision",
+          "11:00 - 12:40 PM - Reasoning",
+          "1:00 - 1:40 PM - Lunch",
+          "1:40 - 1:50 PM - 1 Comedy Video",
+          "1:50 - 2:30 PM - Relax",
+          "2:30 - 3:40 PM - English",
+          "4:00 - 5:20 PM - Communication and Content Creation",
+          "5:40 - 6:30 PM - Aptitude Question + 20 mins Mock",
+          "6:40 - 7:00 PM - Snack",
+          "7:00 - 8:00 PM - System Design study",
+          "8:00 - 8:30 PM - Dinner",
+          "8:30 - 9:30 PM - CORE CSE - IBPS SO IT",
+          "9:30 - 10:00 PM - Spring Boot Java (1 Topic daily)",
+          "10:00 - 10:40 PM - DSA revision (1 Q daily)",
+          "10:45 PM - Sleep"
+        ]
+      }
     }
   }
 }

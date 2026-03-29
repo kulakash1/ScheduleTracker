@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Status Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4eb;
+      --ink: #1f2933;
+      --muted: #52606d;
+      --card: #fffdf8;
+      --line: #e0d9c8;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --warn: #b45309;
+      --ok: #166534;
+      --shadow: 0 12px 35px rgba(43, 35, 24, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 5%, #fdf3c4 0, transparent 30%),
+        radial-gradient(circle at 85% 20%, #bee3f8 0, transparent 28%),
+        linear-gradient(130deg, #f7f4eb, #fdf8ef 45%, #f5f3ff 100%);
+      min-height: 100vh;
+      padding: 1.2rem;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(140deg, #fff9e6, #f1f7ff 60%, #e8fffb);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      animation: rise 500ms ease both;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      letter-spacing: 0.01em;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 0.3rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid #c6bda8;
+      background: #fff;
+      padding: 0.6rem 0.7rem;
+      color: var(--ink);
+    }
+
+    button {
+      cursor: pointer;
+      background: linear-gradient(135deg, #14b8a6, #0f766e);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      transition: transform 150ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      animation: rise 650ms ease both;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #f9f4e8, #fffdf8);
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.02rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .day-count {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1f2937;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 0.22rem 0.55rem;
+    }
+
+    .summary {
+      font-weight: 700;
+      color: var(--ok);
+      background: #ecfdf3;
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.82rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.85rem;
+      padding: 0.9rem;
+    }
+
+    #cards {
+      display: block;
+      padding: 0;
+    }
+
+    .month-wrap {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .month-wrap:last-child {
+      border-bottom: none;
+    }
+
+    .month-head {
+      margin: 0;
+      padding: 0.85rem 0.95rem;
+      font-size: 0.98rem;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      cursor: pointer;
+      user-select: none;
+      background: #fff9f0;
+      border-bottom: 1px solid #f3e8d0;
+    }
+
+    .month-label {
+      font-weight: 800;
+    }
+
+    .month-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .month-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .month-expander {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #d6d3d1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #334155;
+      background: #f8fafc;
+    }
+
+    .month-wrap .grid {
+      display: none;
+    }
+
+    .month-wrap.expanded .grid {
+      display: grid;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      padding: 0.9rem;
+    }
+
+    .editor-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 0.65rem;
+    }
+
+    .editor-card h3 {
+      margin: 0 0 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    .editor-card textarea {
+      min-height: 190px;
+    }
+
+    .editor-actions {
+      padding: 0 0.9rem 0.95rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .admin-bar {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid #d8d2c2;
+      background: #fffbf2;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.6rem;
+      align-items: end;
+    }
+
+    .admin-status {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #9a3412;
+    }
+
+    .admin-status.ok {
+      color: #166534;
+    }
+
+    .secondary-btn {
+      background: linear-gradient(135deg, #94a3b8, #64748b);
+    }
+
+    .day-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      animation: rise 500ms ease both;
+    }
+
+    .day-head {
+      padding: 0.7rem 0.75rem;
+      background: #fff7e6;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .day-head-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .day-complete-btn {
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #1f2937;
+      background: linear-gradient(135deg, #facc15, #eab308);
+    }
+
+    .day-complete-btn.completed {
+      color: #ffffff;
+      background: linear-gradient(135deg, #22c55e, #15803d);
+    }
+
+    .day-complete-btn:disabled {
+      cursor: default;
+      transform: none;
+      opacity: 1;
+    }
+
+    .expander {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 800;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .day-body {
+      display: none;
+    }
+
+    .day-card.expanded .day-body {
+      display: block;
+    }
+
+    .day-card.expanded .expander {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .day-title {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .day-date {
+      font-size: 0.84rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      border-radius: 999px;
+      padding: 0.2rem 0.45rem;
+      font-weight: 800;
+      color: #0c4a6e;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      white-space: nowrap;
+    }
+
+    .section {
+      padding: 0.7rem;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section h3 {
+      margin: 0 0 0.45rem;
+      font-size: 0.86rem;
+      color: #334e68;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.45rem;
+      align-items: start;
+      margin: 0.35rem 0;
+      font-size: 0.84rem;
+      line-height: 1.25;
+    }
+
+    .check input {
+      margin-top: 0.2rem;
+      accent-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 58px;
+      width: 100%;
+      resize: vertical;
+      font-size: 0.83rem;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: 0.3rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 650px) {
+      body {
+        padding: 0.7rem;
+      }
+
+      .hero,
+      .panel {
+        border-radius: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1 class="title">Daily Status Tracker</h1>
+      <p class="subtitle">Set the first day and custom range, then open month/day cards explicitly to view details.</p>
+      <div class="controls">
+        <div class="field">
+          <label for="userSelect">User</label>
+          <select id="userSelect"></select>
+        </div>
+        <div class="field">
+          <label for="newUsername">Add User</label>
+          <input id="newUsername" type="text" placeholder="Enter username" />
+        </div>
+        <div class="field">
+          <label for="addUserBtn">Create User</label>
+          <button id="addUserBtn" type="button">Add User</button>
+        </div>
+        <div class="field">
+          <label for="firstDate">First Day Date</label>
+          <input id="firstDate" type="date" />
+        </div>
+        <div class="field">
+          <label for="rangeValue">Tracker Range</label>
+          <input id="rangeValue" type="number" min="1" value="4" />
+        </div>
+        <div class="field">
+          <label for="rangeUnit">Range Unit</label>
+          <select id="rangeUnit">
+            <option value="days">Days</option>
+            <option value="weeks">Weeks</option>
+            <option value="months" selected>Months</option>
+          </select>
+        </div>
+        <div class="field">
+          <button id="resetBtn" type="button">Reset Checkboxes</button>
+        </div>
+      </div>
+
+      <div class="admin-bar">
+        <div class="field">
+          <label for="adminId">Admin ID</label>
+          <input id="adminId" type="text" placeholder="Enter admin ID" />
+        </div>
+        <div class="field">
+          <label for="adminPassword">Admin Password</label>
+          <input id="adminPassword" type="password" placeholder="Enter password" />
+        </div>
+        <div class="field">
+          <label for="adminLoginBtn">Admin Access</label>
+          <button id="adminLoginBtn" type="button">Login as Admin</button>
+        </div>
+        <div class="field">
+          <label for="adminStatus">Admin Status</label>
+          <div id="adminStatus" class="admin-status">Locked</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2><span class="day-count" id="dayCounter">0/0</span>Progress Board</h2>
+        <span class="summary" id="overallSummary">Completed 0%</span>
+      </div>
+      <div class="grid" id="cards"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Task Templates</h2>
+        <span class="summary">Admin Editable</span>
+      </div>
+      <div class="editor-grid">
+        <article class="editor-card">
+          <h3>Weekday Tasks</h3>
+          <textarea id="weekdayTemplate"></textarea>
+        </article>
+        <article class="editor-card">
+          <h3>Saturday Tasks</h3>
+          <textarea id="saturdayTemplate"></textarea>
+        </article>
+        <article class="editor-card">
+          <h3>Sunday Tasks</h3>
+          <textarea id="sundayTemplate"></textarea>
+        </article>
+      </div>
+      <div class="editor-actions">
+        <button id="saveTemplateBtn" type="button">Save Templates</button>
+        <button id="resetTemplateBtn" class="secondary-btn" type="button">Reset Default Templates</button>
+        <button id="clearUserDataBtn" class="secondary-btn" type="button">Clear Selected User Data</button>
+        <button id="deleteUserBtn" class="secondary-btn" type="button">Delete Selected User</button>
+      </div>
+    </section>
+
+    <p class="footer-note">User list, user states, and user actions are stored in local JSON files via API.</p>
+  </main>
+
+  <script>
+    const defaultWeekdayItems = [
+      "5:45 AM - Wake up",
+      "6:00 - 7:20 AM - DSA practice",
+      "7:20 - 7:40 AM - Breakfast",
+      "7:50 - 9:00 AM - Commute",
+      "9:00 AM - 5:10 PM - Office",
+      "5:10 - 6:20 PM - Commute back",
+      "6:20 - 6:40 PM - Relax",
+      "6:40 - 7:00 PM - Snack",
+      "7:00 - 8:00 PM - System Design study",
+      "8:00 - 8:30 PM - Dinner",
+      "8:30 - 9:30 PM - English/Aptitude/Reasoning",
+      "9:30 - 10:00 PM - Spring Boot learning",
+      "10:00 - 10:40 PM - DSA revision",
+      "10:45 PM - Sleep"
+    ];
+
+    const defaultSaturdayItems = [
+      "7:00 AM - Wake up",
+      "7:20 - 7:40 AM - Breakfast (milk 500 ml, 5 almonds, fruit)",
+      "7:45 - 9:45 AM - DSA deep practice (3-4 problems)",
+      "9:45 - 10:15 AM - Break",
+      "10:15 - 11:30 AM - System Design study",
+      "12:30 PM - Lunch (roti, rice, dal, sabji)",
+      "1:00 - 2:00 PM - Rest / short nap",
+      "2:00 - 3:00 PM - Spring Boot project work",
+      "3:30 - 4:30 PM - DSA advanced problems",
+      "6:00 PM - Snack (coconut water + fruit)",
+      "6:30 - 7:30 PM - English / Aptitude / Reasoning",
+      "8:00 PM - Dinner (paneer, salad, peanuts, dahi)",
+      "9:00 - 9:30 PM - Light tech learning / system design videos",
+      "11:00 PM - Sleep"
+    ];
+
+    const defaultSundayItems = [
+      "7:30 AM - Wake up",
+      "7:30 - 8:00 AM - Breakfast",
+      "8:00 - 10:30 AM - DSA marathon (5-6 problems)",
+      "10:30 - 11:00 AM - Break",
+      "11:00 - 12:30 PM - System Design case study",
+      "1:00 PM - Lunch",
+      "1:30 - 2:30 PM - Rest",
+      "2:30 - 5:00 PM - Spring Boot deep project work",
+      "6:00 PM - Snack (fruit + coconut water)",
+      "6:30 - 7:30 PM - Weekly review of DSA and concepts",
+      "8:00 PM - Dinner",
+      "9:00 - 9:45 PM - English practice / tech reading",
+      "10:30 PM - Sleep"
+    ];
+
+    const dietItems = [
+      "Breakfast: 500 ml milk + 5 almonds + 1 fruit",
+      "Lunch: 4 roti + 80 g rice + 50 g dal + 100 g sabji",
+      "Evening snack: coconut water + fruit",
+      "Dinner (opt 1): paneer + salad + peanuts + dahi",
+      "Dinner (opt 2): sattu shake (sattu + oats + banana + milk)",
+      "Before bed: 250 ml milk (optional)"
+    ];
+
+    const firstDateInput = document.getElementById("firstDate");
+    const userSelect = document.getElementById("userSelect");
+    const newUsernameInput = document.getElementById("newUsername");
+    const addUserBtn = document.getElementById("addUserBtn");
+    const adminIdInput = document.getElementById("adminId");
+    const adminPasswordInput = document.getElementById("adminPassword");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminStatus = document.getElementById("adminStatus");
+    const rangeValueInput = document.getElementById("rangeValue");
+    const rangeUnitSelect = document.getElementById("rangeUnit");
+    const cards = document.getElementById("cards");
+    const dayCounter = document.getElementById("dayCounter");
+    const overallSummary = document.getElementById("overallSummary");
+    const resetBtn = document.getElementById("resetBtn");
+    const weekdayTemplate = document.getElementById("weekdayTemplate");
+    const saturdayTemplate = document.getElementById("saturdayTemplate");
+    const sundayTemplate = document.getElementById("sundayTemplate");
+    const saveTemplateBtn = document.getElementById("saveTemplateBtn");
+    const resetTemplateBtn = document.getElementById("resetTemplateBtn");
+    const clearUserDataBtn = document.getElementById("clearUserDataBtn");
+    const deleteUserBtn = document.getElementById("deleteUserBtn");
+
+    let appState = {};
+    let activeUser = "";
+    let persistTimer = null;
+    let isAdminLoggedIn = false;
+    let adminSession = {
+      adminId: "",
+      password: ""
+    };
+
+    async function apiRequest(url, options = {}) {
+      const { headers: customHeaders = {}, ...restOptions } = options;
+      const mergedHeaders = {
+        "Content-Type": "application/json",
+        ...customHeaders
+      };
+      const response = await fetch(url, {
+        ...restOptions,
+        headers: mergedHeaders,
+      });
+
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+      return response.json();
+    }
+
+    function getAdminHeaders() {
+      return {
+        "x-admin-id": adminSession.adminId,
+        "x-admin-password": adminSession.password
+      };
+    }
+
+    function setAdminUiState(loggedIn) {
+      isAdminLoggedIn = loggedIn;
+      weekdayTemplate.disabled = !loggedIn;
+      saturdayTemplate.disabled = !loggedIn;
+      sundayTemplate.disabled = !loggedIn;
+      saveTemplateBtn.disabled = !loggedIn;
+      resetTemplateBtn.disabled = !loggedIn;
+      clearUserDataBtn.disabled = !loggedIn;
+      deleteUserBtn.disabled = !loggedIn;
+
+      adminStatus.textContent = loggedIn ? "Unlocked (adminAkash)" : "Locked";
+      adminStatus.classList.toggle("ok", loggedIn);
+      adminLoginBtn.textContent = loggedIn ? "Admin Active" : "Login as Admin";
+    }
+
+    function requireAdminAccess(actionLabel) {
+      if (isAdminLoggedIn) return true;
+      alert("Admin login required to " + actionLabel + ". Use adminAkash / 123.");
+      return false;
+    }
+
+    function loadState() {
+      return appState || {};
+    }
+
+    function schedulePersist() {
+      if (persistTimer) {
+        clearTimeout(persistTimer);
+      }
+      persistTimer = setTimeout(() => {
+        persistState().catch(() => {});
+      }, 250);
+    }
+
+    async function persistState() {
+      if (!activeUser) return;
+      await apiRequest("/api/state/" + encodeURIComponent(activeUser), {
+        method: "PUT",
+        body: JSON.stringify({ state: appState })
+      });
+    }
+
+    async function logUserAction(action, payload) {
+      if (!activeUser) return;
+      await apiRequest("/api/actions", {
+        method: "POST",
+        body: JSON.stringify({
+          username: activeUser,
+          action,
+          payload
+        })
+      });
+    }
+
+    function saveState(state, actionMeta) {
+      appState = state;
+      schedulePersist();
+
+      if (actionMeta && actionMeta.action) {
+        logUserAction(actionMeta.action, actionMeta.payload || {}).catch(() => {});
+      }
+    }
+
+    function renderUserOptions(users) {
+      userSelect.innerHTML = "";
+      users.forEach((username) => {
+        const option = document.createElement("option");
+        option.value = username;
+        option.textContent = username;
+        userSelect.appendChild(option);
+      });
+    }
+
+    function hydrateInputsFromState(state) {
+      const today = new Date();
+
+      if (state?.meta?.firstDate) {
+        firstDateInput.value = state.meta.firstDate;
+      } else {
+        firstDateInput.value = toIso(today);
+      }
+
+      rangeValueInput.value = String(state?.meta?.rangeValue || 4);
+      rangeUnitSelect.value = state?.meta?.rangeUnit || "months";
+
+      const templates = getTemplates(state);
+      weekdayTemplate.value = templates.weekday.join("\n");
+      saturdayTemplate.value = templates.saturday.join("\n");
+      sundayTemplate.value = templates.sunday.join("\n");
+    }
+
+    async function setActiveUser(username) {
+      activeUser = username;
+      const data = await apiRequest("/api/state/" + encodeURIComponent(username));
+      appState = data?.state || {};
+      hydrateInputsFromState(appState);
+      render();
+    }
+
+    async function ensureUsers() {
+      let usersData = await apiRequest("/api/users");
+      let users = Array.isArray(usersData.users) ? usersData.users : [];
+
+      if (users.length === 0) {
+        await apiRequest("/api/users", {
+          method: "POST",
+          body: JSON.stringify({ username: "default" })
+        });
+        usersData = await apiRequest("/api/users");
+        users = Array.isArray(usersData.users) ? usersData.users : [];
+      }
+
+      renderUserOptions(users);
+      await setActiveUser(users[0]);
+    }
+
+    function toIso(d) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    function parseDate(iso) {
+      const d = new Date(iso + "T00:00:00");
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function buildDatesByMonths(startIso, months) {
+      const start = parseDate(startIso);
+      if (!start) return [];
+
+      // If start date is weekend, move to next weekday.
+      while (start.getDay() === 0 || start.getDay() === 6) {
+        start.setDate(start.getDate() + 1);
+      }
+
+      const end = new Date(start);
+      end.setMonth(end.getMonth() + months);
+
+      const out = [];
+      const cursor = new Date(start);
+
+      while (cursor < end) {
+        out.push(new Date(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      return out;
+    }
+
+    function buildDatesByDays(startIso, days) {
+      const start = parseDate(startIso);
+      if (!start) return [];
+
+      const out = [];
+      const cursor = new Date(start);
+      for (let i = 0; i < days; i++) {
+        out.push(new Date(cursor));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return out;
+    }
+
+    function getDatesFromRange(startIso, rangeValue, rangeUnit) {
+      const value = Math.max(1, Number(rangeValue) || 1);
+      if (rangeUnit === "months") {
+        return buildDatesByMonths(startIso, value);
+      }
+      if (rangeUnit === "weeks") {
+        return buildDatesByDays(startIso, value * 7);
+      }
+      return buildDatesByDays(startIso, value);
+    }
+
+    function splitLines(text) {
+      return text
+        .split("\n")
+        .map((v) => v.trim())
+        .filter(Boolean);
+    }
+
+    function getTemplates(state) {
+      const templateState = state?.meta?.templates || {};
+      return {
+        weekday: Array.isArray(templateState.weekday) && templateState.weekday.length
+          ? templateState.weekday
+          : defaultWeekdayItems,
+        saturday: Array.isArray(templateState.saturday) && templateState.saturday.length
+          ? templateState.saturday
+          : defaultSaturdayItems,
+        sunday: Array.isArray(templateState.sunday) && templateState.sunday.length
+          ? templateState.sunday
+          : defaultSundayItems
+      };
+    }
+
+    function taskKeyForDate(dateObj) {
+      const day = dateObj.getDay();
+      if (day === 6) return "saturday";
+      if (day === 0) return "sunday";
+      return "weekday";
+    }
+
+    function getScheduleForDate(dateObj, templates) {
+      return templates[taskKeyForDate(dateObj)] || [];
+    }
+
+    function monthKey(dateObj) {
+      return dateObj.getFullYear() + "-" + String(dateObj.getMonth() + 1).padStart(2, "0");
+    }
+
+    function monthLabel(dateObj) {
+      return dateObj.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    }
+
+    function startOfDay(dateObj) {
+      const out = new Date(dateObj);
+      out.setHours(0, 0, 0, 0);
+      return out;
+    }
+
+    function getDefaultOpenDayKey(dates) {
+      if (!dates.length) return "";
+
+      const today = startOfDay(new Date());
+      const todayIso = toIso(today);
+      const hasToday = dates.some((d) => toIso(d) === todayIso);
+      if (hasToday) return todayIso;
+
+      const next = dates.find((d) => startOfDay(d) > today);
+      if (next) return toIso(next);
+
+      return toIso(dates[0]);
+    }
+
+    function fmtDate(d) {
+      return d.toLocaleDateString(undefined, {
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function createChecklist(items, bucket, dayKey, state) {
+      const wrap = document.createElement("div");
+
+      items.forEach((text, idx) => {
+        const row = document.createElement("label");
+        row.className = "check";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = Boolean(state?.[dayKey]?.[bucket]?.[idx]);
+
+        cb.addEventListener("change", () => {
+          const current = loadState();
+          current[dayKey] = current[dayKey] || { schedule: {}, diet: {}, notes: "" };
+          current[dayKey][bucket][idx] = cb.checked;
+          saveState(current, {
+            action: "toggle_item",
+            payload: {
+              dayKey,
+              bucket,
+              item: text,
+              checked: cb.checked
+            }
+          });
+          updateSummary();
+          updateDayBadge(dayKey, row.closest(".day-card"));
+        });
+
+        const textNode = document.createElement("span");
+        textNode.textContent = text;
+
+        row.append(cb, textNode);
+        wrap.appendChild(row);
+      });
+
+      return wrap;
+    }
+
+    function getDayProgress(dayKey, state, scheduleLength) {
+      const doneSchedule = Object.values(state?.[dayKey]?.schedule || {}).filter(Boolean).length;
+      const doneDiet = Object.values(state?.[dayKey]?.diet || {}).filter(Boolean).length;
+      const total = scheduleLength + dietItems.length;
+      const done = doneSchedule + doneDiet;
+      return total ? Math.round((done / total) * 100) : 0;
+    }
+
+    function updateDayBadge(dayKey, card) {
+      const state = loadState();
+      const scheduleLength = Number(card.dataset.scheduleLength || 0);
+      const p = getDayProgress(dayKey, state, scheduleLength);
+      const badge = card.querySelector(".badge");
+      if (badge) {
+        badge.textContent = "Done " + p + "%";
+      }
+
+      const completeBtn = card.querySelector(".day-complete-btn");
+      if (completeBtn) {
+        const done = p >= 100;
+        completeBtn.textContent = done ? "Completed" : "Mark Complete";
+        completeBtn.disabled = done;
+        completeBtn.classList.toggle("completed", done);
+      }
+    }
+
+    function markWholeDayComplete(dayKey, scheduleItems) {
+      const current = loadState();
+      current[dayKey] = current[dayKey] || { schedule: {}, diet: {}, notes: "" };
+
+      scheduleItems.forEach((_, idx) => {
+        current[dayKey].schedule[idx] = true;
+      });
+      dietItems.forEach((_, idx) => {
+        current[dayKey].diet[idx] = true;
+      });
+
+      saveState(current, {
+        action: "mark_day_complete",
+        payload: {
+          dayKey,
+          scheduleCount: scheduleItems.length,
+          dietCount: dietItems.length
+        }
+      });
+      render();
+    }
+
+    function updateSummary() {
+      const state = loadState();
+      const allChecks = cards.querySelectorAll('input[type="checkbox"]');
+      const doneChecks = Array.from(allChecks).filter((c) => c.checked).length;
+      const pct = allChecks.length ? Math.round((doneChecks / allChecks.length) * 100) : 0;
+      overallSummary.textContent = "Completed " + pct + "%";
+
+      const dayCards = cards.querySelectorAll(".day-card");
+      let completedDays = 0;
+      dayCards.forEach((card) => {
+        const dayKey = card.dataset.dayKey;
+        const scheduleLength = Number(card.dataset.scheduleLength || 0);
+        const doneSchedule = Object.values(state?.[dayKey]?.schedule || {}).filter(Boolean).length;
+        const doneDiet = Object.values(state?.[dayKey]?.diet || {}).filter(Boolean).length;
+        const totalItems = scheduleLength + dietItems.length;
+        if (totalItems > 0 && doneSchedule + doneDiet >= totalItems) {
+          completedDays += 1;
+        }
+      });
+      dayCounter.textContent = completedDays + "/" + dayCards.length;
+
+      const dateValue = firstDateInput.value;
+      if (!dateValue) return;
+      state.meta = state.meta || {};
+      state.meta.firstDate = dateValue;
+      state.meta.rangeValue = Math.max(1, Number(rangeValueInput.value) || 1);
+      state.meta.rangeUnit = rangeUnitSelect.value;
+      saveState(state);
+    }
+
+    function render() {
+      cards.innerHTML = "";
+      const state = loadState();
+      const templates = getTemplates(state);
+      const dates = getDatesFromRange(firstDateInput.value, rangeValueInput.value, rangeUnitSelect.value);
+      const defaultOpenDayKey = getDefaultOpenDayKey(dates);
+      const savedOpenDay = state?.meta?.openDayKey || "";
+      const validSavedOpenDay = dates.some((d) => toIso(d) === savedOpenDay) ? savedOpenDay : "";
+      const initialOpenDay = validSavedOpenDay || defaultOpenDayKey;
+
+      const monthBuckets = new Map();
+      dates.forEach((d, i) => {
+        const key = monthKey(d);
+        if (!monthBuckets.has(key)) {
+          monthBuckets.set(key, { label: monthLabel(d), rows: [] });
+        }
+        monthBuckets.get(key).rows.push({ date: d, index: i + 1 });
+      });
+
+      const savedOpenMonth = state?.meta?.openMonthKey || "";
+      const validSavedOpenMonth = monthBuckets.has(savedOpenMonth) ? savedOpenMonth : "";
+      const initialOpenMonth = validSavedOpenMonth || (initialOpenDay ? initialOpenDay.slice(0, 7) : "");
+
+      monthBuckets.forEach((bucket, key) => {
+        const monthWrap = document.createElement("section");
+        monthWrap.className = "month-wrap";
+        const isMonthOpen = initialOpenMonth === key;
+        if (isMonthOpen) {
+          monthWrap.classList.add("expanded");
+        }
+
+        const monthHead = document.createElement("h3");
+        monthHead.className = "month-head";
+
+        const monthLabelEl = document.createElement("span");
+        monthLabelEl.className = "month-label";
+        monthLabelEl.textContent = bucket.label;
+
+        const monthRight = document.createElement("span");
+        monthRight.className = "month-right";
+
+        const monthCount = document.createElement("span");
+        monthCount.className = "month-count";
+        monthCount.textContent = bucket.rows.length + " days";
+
+        const monthExpander = document.createElement("span");
+        monthExpander.className = "month-expander";
+        monthExpander.textContent = isMonthOpen ? "-" : "+";
+
+        monthRight.append(monthCount, monthExpander);
+        monthHead.append(monthLabelEl, monthRight);
+
+        monthHead.addEventListener("click", () => {
+          const isOpenNow = monthWrap.classList.contains("expanded");
+          cards.querySelectorAll(".month-wrap.expanded").forEach((openMonth) => {
+            openMonth.classList.remove("expanded");
+            const exp = openMonth.querySelector(".month-expander");
+            if (exp) exp.textContent = "+";
+          });
+
+          const current = loadState();
+          current.meta = current.meta || {};
+          if (!isOpenNow) {
+            monthWrap.classList.add("expanded");
+            monthExpander.textContent = "-";
+            current.meta.openMonthKey = key;
+          } else {
+            current.meta.openMonthKey = "";
+          }
+          saveState(current);
+        });
+
+        const monthGrid = document.createElement("div");
+        monthGrid.className = "grid";
+
+        bucket.rows.forEach(({ date: d, index }) => {
+        const dayKey = toIso(d);
+        const scheduleItems = getScheduleForDate(d, templates);
+        const card = document.createElement("article");
+        card.className = "day-card";
+        card.dataset.scheduleLength = String(scheduleItems.length);
+        card.dataset.dayKey = dayKey;
+        if (dayKey === initialOpenDay) {
+          card.classList.add("expanded");
+        }
+
+        const head = document.createElement("header");
+        head.className = "day-head";
+
+        const left = document.createElement("div");
+        const day = document.createElement("p");
+        day.className = "day-title";
+        day.textContent = "Day " + index;
+
+        const date = document.createElement("p");
+        date.className = "day-date";
+        date.textContent = fmtDate(d);
+        left.append(day, date);
+
+        const right = document.createElement("div");
+        right.className = "day-head-right";
+
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        const dayProgress = getDayProgress(dayKey, state, scheduleItems.length);
+        badge.textContent = "Done " + dayProgress + "%";
+
+        const completeDayBtn = document.createElement("button");
+        completeDayBtn.type = "button";
+        completeDayBtn.className = "day-complete-btn";
+        completeDayBtn.textContent = dayProgress >= 100 ? "Completed" : "Mark Complete";
+        completeDayBtn.disabled = dayProgress >= 100;
+        completeDayBtn.classList.toggle("completed", dayProgress >= 100);
+        completeDayBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          markWholeDayComplete(dayKey, scheduleItems);
+        });
+
+        const expander = document.createElement("span");
+        expander.className = "expander";
+        expander.textContent = card.classList.contains("expanded") ? "-" : "+";
+
+        right.append(badge, completeDayBtn, expander);
+        head.append(left, right);
+
+        head.addEventListener("click", () => {
+          const isExpanded = card.classList.contains("expanded");
+          cards.querySelectorAll(".day-card.expanded").forEach((openCard) => {
+            openCard.classList.remove("expanded");
+            const openExpander = openCard.querySelector(".expander");
+            if (openExpander) openExpander.textContent = "+";
+          });
+
+          const current = loadState();
+          current.meta = current.meta || {};
+
+          if (!isExpanded) {
+            card.classList.add("expanded");
+            expander.textContent = "-";
+            current.meta.openDayKey = dayKey;
+            current.meta.openMonthKey = key;
+          } else {
+            current.meta.openDayKey = "";
+          }
+
+          saveState(current);
+        });
+
+        const dayBody = document.createElement("div");
+        dayBody.className = "day-body";
+
+        const scheduleSection = document.createElement("section");
+        scheduleSection.className = "section";
+        scheduleSection.innerHTML = "<h3>Daily Schedule</h3>";
+        scheduleSection.appendChild(createChecklist(scheduleItems, "schedule", dayKey, state));
+
+        const dietSection = document.createElement("section");
+        dietSection.className = "section";
+        dietSection.innerHTML = "<h3>Diet Checklist</h3>";
+        dietSection.appendChild(createChecklist(dietItems, "diet", dayKey, state));
+
+        const notesSection = document.createElement("section");
+        notesSection.className = "section";
+        notesSection.innerHTML = "<h3>Daily Notes</h3>";
+
+        const notes = document.createElement("textarea");
+        notes.placeholder = "What went well today? Any blockers?";
+        notes.value = state?.[dayKey]?.notes || "";
+        notes.addEventListener("input", () => {
+          const current = loadState();
+          current[dayKey] = current[dayKey] || { schedule: {}, diet: {}, notes: "" };
+          current[dayKey].notes = notes.value;
+          saveState(current, {
+            action: "update_notes",
+            payload: {
+              dayKey
+            }
+          });
+        });
+        notesSection.appendChild(notes);
+
+        dayBody.append(scheduleSection, dietSection, notesSection);
+        card.append(head, dayBody);
+        monthGrid.appendChild(card);
+      });
+
+        monthWrap.append(monthHead, monthGrid);
+        cards.appendChild(monthWrap);
+      });
+
+      updateSummary();
+    }
+
+    firstDateInput.addEventListener("change", render);
+    rangeValueInput.addEventListener("change", render);
+    rangeUnitSelect.addEventListener("change", render);
+
+    userSelect.addEventListener("change", async () => {
+      if (!userSelect.value) return;
+      await setActiveUser(userSelect.value);
+    });
+
+    addUserBtn.addEventListener("click", async () => {
+      const username = newUsernameInput.value.trim();
+      if (!username) return;
+
+      await apiRequest("/api/users", {
+        method: "POST",
+        body: JSON.stringify({ username })
+      });
+
+      const usersData = await apiRequest("/api/users");
+      const users = Array.isArray(usersData.users) ? usersData.users : [];
+      renderUserOptions(users);
+      userSelect.value = username;
+      newUsernameInput.value = "";
+      await setActiveUser(username);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      const state = loadState();
+      const dates = getDatesFromRange(firstDateInput.value, rangeValueInput.value, rangeUnitSelect.value);
+
+      dates.forEach((d) => {
+        const dayKey = toIso(d);
+        if (state[dayKey]) {
+          state[dayKey].schedule = {};
+          state[dayKey].diet = {};
+        }
+      });
+
+      saveState(state, {
+        action: "reset_checkboxes",
+        payload: {
+          fromDate: firstDateInput.value,
+          rangeValue: Number(rangeValueInput.value),
+          rangeUnit: rangeUnitSelect.value
+        }
+      });
+      render();
+    });
+
+    saveTemplateBtn.addEventListener("click", () => {
+      if (!requireAdminAccess("change templates")) return;
+      const state = loadState();
+      state.meta = state.meta || {};
+      state.meta.templates = {
+        weekday: splitLines(weekdayTemplate.value),
+        saturday: splitLines(saturdayTemplate.value),
+        sunday: splitLines(sundayTemplate.value)
+      };
+      saveState(state, {
+        action: "save_templates",
+        payload: {
+          weekdayCount: state.meta.templates.weekday.length,
+          saturdayCount: state.meta.templates.saturday.length,
+          sundayCount: state.meta.templates.sunday.length
+        }
+      });
+      render();
+    });
+
+    resetTemplateBtn.addEventListener("click", () => {
+      if (!requireAdminAccess("reset templates")) return;
+      const state = loadState();
+      state.meta = state.meta || {};
+      state.meta.templates = {
+        weekday: [...defaultWeekdayItems],
+        saturday: [...defaultSaturdayItems],
+        sunday: [...defaultSundayItems]
+      };
+      saveState(state, {
+        action: "reset_templates",
+        payload: {}
+      });
+
+      weekdayTemplate.value = defaultWeekdayItems.join("\n");
+      saturdayTemplate.value = defaultSaturdayItems.join("\n");
+      sundayTemplate.value = defaultSundayItems.join("\n");
+      render();
+    });
+
+    adminLoginBtn.addEventListener("click", async () => {
+      const adminId = adminIdInput.value.trim();
+      const password = adminPasswordInput.value;
+      if (!adminId || !password) {
+        alert("Enter both admin ID and password.");
+        return;
+      }
+
+      try {
+        await apiRequest("/api/admin/login", {
+          method: "POST",
+          body: JSON.stringify({ adminId, password })
+        });
+        adminSession = { adminId, password };
+        setAdminUiState(true);
+      } catch {
+        adminSession = { adminId: "", password: "" };
+        setAdminUiState(false);
+        alert("Invalid admin credentials.");
+      }
+    });
+
+    clearUserDataBtn.addEventListener("click", async () => {
+      if (!requireAdminAccess("clear user data")) return;
+      if (!activeUser) return;
+
+      const ok = confirm("Clear all saved checklist state and action history for " + activeUser + "?");
+      if (!ok) return;
+
+      try {
+        await apiRequest("/api/admin/clear-user-data", {
+          method: "POST",
+          headers: getAdminHeaders(),
+          body: JSON.stringify({ username: activeUser })
+        });
+        await setActiveUser(activeUser);
+      } catch {
+        alert("Unable to clear user data. Please verify admin login.");
+      }
+    });
+
+    deleteUserBtn.addEventListener("click", async () => {
+      if (!requireAdminAccess("delete a user")) return;
+      if (!activeUser) return;
+
+      const userToDelete = activeUser;
+      const ok = confirm("Delete user " + userToDelete + " and remove all related data?");
+      if (!ok) return;
+
+      try {
+        await apiRequest("/api/admin/users/" + encodeURIComponent(userToDelete), {
+          method: "DELETE",
+          headers: getAdminHeaders()
+        });
+
+        let usersData = await apiRequest("/api/users");
+        let users = Array.isArray(usersData.users) ? usersData.users : [];
+
+        if (!users.length) {
+          await apiRequest("/api/users", {
+            method: "POST",
+            body: JSON.stringify({ username: "default" })
+          });
+          usersData = await apiRequest("/api/users");
+          users = Array.isArray(usersData.users) ? usersData.users : [];
+        }
+
+        renderUserOptions(users);
+        userSelect.value = users[0] || "";
+        if (users[0]) {
+          await setActiveUser(users[0]);
+        }
+      } catch {
+        alert("Unable to delete user. Please verify admin login.");
+      }
+    });
+
+    setAdminUiState(false);
+
+    ensureUsers().catch((error) => {
+      console.error(error);
+      alert("Unable to load user data. Start the tracker via server.js (npm install, npm start).");
+    });
+  </script>
+</body>
+</html>
